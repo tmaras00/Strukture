@@ -54,3 +54,4 @@ int main() {
 	fclose(fajl);
 	return 0;
 }
+
