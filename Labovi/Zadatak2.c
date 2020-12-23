@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include <ctype.h>
 
 typedef struct osoba* p_osoba;
 
@@ -13,22 +14,36 @@ typedef struct osoba {
 }_osoba;
 
 int ispis(p_osoba);
-int unosPocetak(p_osoba); 
-int unosKraj(p_osoba);    
-int traziPrezime(p_osoba);    
+int unosPocetak(p_osoba);
+int unosKraj(p_osoba);
+int traziPrezime(p_osoba);
 int traziUkloni(p_osoba);
 
 int main()
 {
 	_osoba head;
 	head.next = NULL;
-	unosPocetak(&head);
-	unosPocetak(&head);
-	unosKraj(&head);
-	unosPocetak(&head);
-	ispis(head.next);
-	traziUkloni(&head);
-	ispis(head.next);
+	char izbor;
+
+	while (1) {
+		printf("\nIZBORNIK:\n");
+		printf("P - unos na pocetak liste\nK - unos na kraj liste\nT - trazi po prezimenu\nD - ukloni po prezimenu\nI - ispis liste\nL - izlaz iz programa\n");
+		printf("Unesite naredbu:");
+		scanf(" %c",&izbor);
+		
+		switch (toupper(izbor)) {
+		case 'P': unosPocetak(&head); break;
+		case 'K': unosKraj(&head); break;
+		case 'T': traziPrezime(head.next); break;
+		case 'D': traziUkloni(&head); break;
+		case 'I': ispis(head.next); break;
+		case 'L': return 1; break;
+		default: printf("Unili ste krivu komandu!\n"); break;
+		
+		}
+	
+	}
+
 
 	return 0;
 }
@@ -55,7 +70,7 @@ int unosPocetak(p_osoba p)
 	return 0;
 }
 
-int unosKraj(p_osoba p)    
+int unosKraj(p_osoba p)
 {
 	p_osoba q = (p_osoba)malloc(sizeof(_osoba));
 
@@ -72,10 +87,10 @@ int unosKraj(p_osoba p)
 	scanf("%d", &q->godina);
 
 	while (p->next != NULL) {   //trazenje zadnjeg clana
-		p = p->next;  
+		p = p->next;
 	}
-	p->next = q; 
-	q->next = NULL; 
+	p->next = q;
+	q->next = NULL;
 
 	return 0;
 }
@@ -84,40 +99,40 @@ int ispis(p_osoba p)
 {
 	puts("Ispis popisa ljudi:\n");
 
-	while (p != NULL)   
+	while (p != NULL)
 	{
 		printf("%s\t%s\t%d\n", p->ime, p->prezime, p->godina);
-		p = p->next;   
+		p = p->next;
 	}
 
 	return 0;
 }
 
-int traziPrezime(p_osoba p) 
+int traziPrezime(p_osoba p)
 {
-	char prezime[20];   
+	char prezime[20];
 
 	puts("Upisi prezime koje trazite:");
-	scanf("%s", prezime);   
+	scanf("%s", prezime);
 
 	while (p->next != NULL && strcmp(prezime, p->prezime) != 0)
 	{
-		p = p->next;   
+		p = p->next;
 	}
 
-	if (strcmp(prezime, p->prezime) == 0)  
-		printf("p_osoba je pronaden: %s\t%s\t%d\n", p->ime, p->prezime, p->godina); 
+	if (strcmp(prezime, p->prezime) == 0)
+		printf("p_osoba je pronaden: %s\t%s\t%d\n", p->ime, p->prezime, p->godina);
 
-	else if (strcmp(prezime, p->prezime) != 0)  
-		puts("Trazeno prezime ne postoji u listi"); 
+	else if (strcmp(prezime, p->prezime) != 0)
+		puts("Trazeno prezime ne postoji u listi");
 
 	return 0;
 }
 
-int traziUkloni(p_osoba p) 
+int traziUkloni(p_osoba p)
 {
 	char prezime[20];
-	p_osoba temp = (p_osoba)malloc(sizeof(_osoba));    
+	p_osoba temp = (p_osoba)malloc(sizeof(_osoba));
 
 	if (temp == NULL) {
 		puts("GREŠKA! Memorija nije alocirana");
@@ -127,14 +142,14 @@ int traziUkloni(p_osoba p)
 	puts("Upisi prezime osobe koju zelis ukloniti:");
 	scanf("%s", prezime);
 
-	while (p->next != NULL && strcmp(prezime, p->prezime) != 0) 
+	while (p->next != NULL && strcmp(prezime, p->prezime) != 0)
 	{
-		temp = p;   
-		p = p->next;    
+		temp = p;
+		p = p->next;
 	}
 
-	if (strcmp(prezime, p->prezime) == 0) { 
-		temp->next = p->next;   
+	if (strcmp(prezime, p->prezime) == 0) {
+		temp->next = p->next;
 		free(p);
 	}
 
