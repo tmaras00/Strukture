@@ -15,9 +15,6 @@ struct cvor {
 
 typedef struct cvor Cvor;
 
-int push(Pozicija last);			//stavi u red
-int pop(Pozicija prvi);				//izvadi iz reda
-
 int randBr();
 int push(Pozicija);
 int pop(Pozicija);
@@ -49,8 +46,8 @@ int main()
 	return 0;
 }
 
-int pop(Pozicija P) {					 
-											
+int pop(Pozicija P) {
+
 	Pozicija prev;
 
 	prev = P;
@@ -66,7 +63,7 @@ int pop(Pozicija P) {
 	free(P);
 }
 
-int push(Pozicija p)	
+int push(Pozicija p)
 {
 	Pozicija novi;
 	Pozicija temp = p->next;
@@ -110,7 +107,7 @@ int randBr()
 	return rand_br;
 }
 
-int ispis(Pozicija p)	
+int ispis(Pozicija p)
 {
 	if (p->next == NULL) {
 		puts("Prazna lista!");
