@@ -1,7 +1,8 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-#include<string.h>
-#include<time.h>
+#include <time.h>
+#include <ctype.h>
 
 typedef struct cvor* Pozicija;
 
@@ -9,53 +10,100 @@ struct cvor {
 
 	int br;
 	Pozicija next;
+	Pozicija last;
 };
 
 typedef struct cvor Cvor;
 
+int randBr();
 int push(Pozicija);
 int pop(Pozicija);
-
+int ispis(Pozicija);
 
 int main()
 {
-	srand(time(0));
 	Cvor head;
 	head.next = NULL;
+	head.last = NULL;
 
-	push(&head);
-	push(&head);
-	push(&head);
-	printf("\nIspis stoga: %d %d %d\n", pop(&head), pop(&head), pop(&head));
+	char izbor;
 
+	srand(time(NULL));
+	while (1) {
+		printf("\n\tIZBORNIK:\n");
+		printf("P - push\nK - pop\nI - ispis\nQ - izlaz iz programa");
+		printf("Unesite svoj izbor: ");
+		scanf(" %c", &izbor);
+
+		switch (toupper(izbor)) {
+		case 'P': push(&head); break;
+		case 'K': pop(&head); break;
+		case 'I': ispis(&head); break;
+		case 'Q': return 0;
+		default: printf("Unijeli ste krivu naredbu!\n"); break;
+		}
+	}
 	return 0;
 }
 
-int push(Pozicija stog) {
+int pop(Pozicija P) {
 
-	Pozicija q;
-	q = (Pozicija)malloc(sizeof(Cvor));
+	Pozicija prev;
 
-	q->br = rand() % (100 - 10 + 1) + 10;
-	printf("%d\n", q->br);
-	q->next = stog->next;
-	stog->next = q;
+	prev = P;
+	P = P->next;
 
-	return 0;
+	while (P->next != NULL) {
+		prev = P;
+		P = P->next;
+	}
+	printf("Uklonjen %d\n", P->br);
+	prev->next = P->next;
+
+	free(P);
 }
 
-int pop(Pozicija stog) {
+int push(Pozicija p)
+{
+	Pozicija novi;
 
-	Pozicija temp;
-	int x;
-
-	if (stog->next == NULL)
+	if (p == NULL) {
+		puts("Neispravan argument, null pokazivac");
 		return -1;
+	}
 
-	temp = stog->next;
-	stog->next = temp->next;
-	x = temp->br;
-	free(temp);
+	novi = (Pozicija)malloc(sizeof(Cvor));	//stvara se novi element
+	novi->br = randBr();
+	printf("Dodan %d\n", novi->br);
 
-	return x;
+	novi->next = p->next;
+	p->next = novi;
+
+	return 0;
+}
+
+int randBr()
+{
+	int rand_br;
+	rand_br = rand() % (100 - 1 + 1) + 1;   // "(b - a + 1) + a" za interval od <a,b>
+	return rand_br;
+}
+
+int ispis(Pozicija p)
+{
+	if (p->next == NULL) {
+		puts("Prazna lista!");
+		return -1;
+	}
+
+	p = p->next;
+
+	printf("Ispis reda: ");
+	while (p != NULL) {
+		printf("%d ", p->br);
+		p = p->next;
+	}
+	puts("");
+
+	return 0;
 }
