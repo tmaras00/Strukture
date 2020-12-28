@@ -1,7 +1,8 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-#include<string.h>
-#include<time.h>
+#include <time.h>
+#include <ctype.h>
 
 typedef struct cvor* Pozicija;
 
@@ -14,10 +15,13 @@ struct cvor {
 
 typedef struct cvor Cvor;
 
-
 int push(Pozicija last);			//stavi u red
 int pop(Pozicija prvi);				//izvadi iz reda
 
+int randBr();
+int push(Pozicija);
+int pop(Pozicija);
+int ispis(Pozicija);
 
 int main()
 {
@@ -25,47 +29,102 @@ int main()
 	head.next = NULL;
 	head.last = NULL;
 
-	srand(time(0));
+	char izbor;
 
-	push(&head);
-	push(&head);
-	push(&head);
+	srand(time(NULL));
+	while (1) {
+		printf("\n\tIZBORNIK:\n");
+		printf("P - push\nK - pop\nI - ispis\nQ - izlaz iz programa");
+		printf("Unesite svoj izbor: ");
+		scanf(" %c", &izbor);
 
-	printf("\nIspis reda: %d %d %d", pop(&head), pop(&head), pop(&head));
+		switch (toupper(izbor)) {
+		case 'P': push(&head); break;
+		case 'K': pop(&head); break;
+		case 'I': ispis(&head); break;
+		case 'Q': return 0;
+		default: printf("Unijeli ste krivu naredbu!\n"); break;
+		}
+	}
+	return 0;
+}
+
+int pop(Pozicija P) {					 
+											
+	Pozicija prev;
+
+	prev = P;
+	P = P->next;
+
+	while (P->next != NULL) {
+		prev = P;
+		P = P->next;
+	}
+	printf("Uklonjen %d\n", P->br);
+	prev->next = P->next;
+
+	free(P);
+}
+
+int push(Pozicija p)	
+{
+	Pozicija novi;
+	Pozicija temp = p->next;
+	Pozicija head = p;
+
+	if (p == NULL) {
+		puts("Neispravan argument");
+		return -1;
+	}
+
+	novi = (Pozicija)malloc(sizeof(Cvor));
+
+	if (novi == NULL) {
+		puts("Neuspjesna alokacija novog elementa!");
+		return -1;
+	}
+
+	novi->br = randBr();
+	printf("Dodan %d\n", novi->br);
+
+	if (p->next == NULL) {	//ako je lista prazna
+		p->last = novi;
+	}
+
+	else {
+		while (temp->next != NULL) {
+			temp = temp->next;
+		}
+		head->last = temp;
+	}
+	novi->next = p->next;
+	p->next = novi;
 
 	return 0;
 }
 
+int randBr()
+{
+	int rand_br;
+	rand_br = rand() % (100 - 1 + 1) + 1;   // "(b - a + 1) + a" za interval od <a,b>
+	return rand_br;
+}
 
-int push(Pozicija last) {			//salje se head element!
+int ispis(Pozicija p)	
+{
+	if (p->next == NULL) {
+		puts("Prazna lista!");
+		return -1;
+	}
 
-	Pozicija p, q = NULL;
-	p = last;
+	p = p->next;
 
-	while (p->next != NULL)
+	printf("Ispis reda: ");
+	while (p != NULL) {
+		printf("%d ", p->br);
 		p = p->next;
-
-	q = (Pozicija)malloc(sizeof(Cvor));
-
-	q->br = rand() % (100 - 10 + 1) + 10;
-	printf("%d\n", q->br);
-
-	q->next = p->next;
-	p->next = q;
+	}
+	puts("");
 
 	return 0;
 }
-
-int pop(Pozicija prvi) {
-
-	Pozicija temp, p;
-	p = prvi;
-	int x;
-
-	temp = p->next;
-	x = temp->br;
-	p->next = temp->next;
-	free(temp);
-
-	return x;
-} 
