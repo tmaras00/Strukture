@@ -69,18 +69,7 @@ int push(Pozicija p)
 	Pozicija temp = p->next;
 	Pozicija head = p;
 
-	if (p == NULL) {
-		puts("Neispravan argument");
-		return -1;
-	}
-
 	novi = (Pozicija)malloc(sizeof(Cvor));
-
-	if (novi == NULL) {
-		puts("Neuspjesna alokacija novog elementa!");
-		return -1;
-	}
-
 	novi->br = randBr();
 	printf("Dodan %d\n", novi->br);
 
