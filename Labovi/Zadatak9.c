@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 struct node;
 typedef struct node* Position;
@@ -12,6 +13,22 @@ struct node {
 	Position right;
 };
 
+Position findMax(Position current) {
+	if (NULL == current) return NULL;
+
+	while (current->right != NULL) {
+		current = current->right;
+		return current;
+	}
+}
+Position findMin(Position current) {
+	if (NULL == current) return NULL;
+
+	while (current->left != NULL) {
+		current = current->left;
+		return current;
+	}
+}
 Position insert(Position current, Position el) {
 	if (current == NULL) return el;
 
@@ -23,7 +40,7 @@ Position insert(Position current, Position el) {
 	}
 	else free(el);
 
-	return current;	
+	return current;
 }
 Position find(Position current, int number) {
 	if (NULL == current) return NULL;
@@ -70,27 +87,72 @@ Position deleteNode(Position current, int number) {
 		current->right = deleteNode(current->right, number);
 	}
 }
-Position findMax(Position current) {
-	if (NULL == current) return NULL;
+Position createNode(int number) {
+	Position p = NULL;
 
-	while (current->right != NULL) {
-		current = current->right;
-		return current;
-	}
-}
-Position findMin(Position current) {
-	if (NULL == current) return NULL;
+	p = (Position)malloc(sizeof(Node));
 
-	while (current->left != NULL) {
-		current = current->left;
-		return current;
+	if (p == NULL) {
+		printf("Alokacija nije uspijela\n");
+		return NULL;
 	}
+	p->number = number;
+	p->left = NULL;
+	p->right = NULL;
 }
+
 
 int main() {
 	Position root = NULL;
+	Position el = NULL;
+	char izbor;
+	int int_root;
+	int broj;
+	int wantednumber;
 
+	printf("Unesi pocetni broj stabla: \n");
+	scanf("%d", &int_root);
+	el = createNode(int_root);
 	root = insert(root, el);
+
+	while (1) {
+		printf("Unesite nardedbu: \n");
+		printf("I - insert\nF - find\nP - print\nD - delete\nE - izlaz\n");
+		scanf(" %c", &izbor);
+		switch (toupper(izbor)) {
+		case 'I':
+			printf("Unesite broj koji zelite dodati u stablo: ");
+			scanf("%d", &broj);
+			root = insert(root, createNode(broj));
+			printf("Uneseno!\n");
+			break;
+		case 'F':
+			printf("Unesite broj koji zelite potraziti: ");
+			scanf("%d", &broj);
+			puts("\n");
+			wantednumber = find(root, broj);
+			if (wantednumber != NULL) printf("Trazeni broj %d je pronaden!\n",broj);
+			break;
+			
+		case 'P':
+			printf("Ispis: ");
+			printInOrder(root);
+			break;
+
+		case 'D':
+			printf("Unesite koji broj zelite izbristai: ");
+			scanf("%d", &broj);
+			root = deleteNode(root, broj);
+			printf("Izbrisano!\n");
+			break;
+
+		case 'E': return 0;
+
+		default: printf("Unesena je kriva naredba!\n");	break;
+		}
+	}
+
+
 
 	return EXIT_SUCCESS;
 
