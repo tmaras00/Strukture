@@ -61,13 +61,14 @@ void printInOrder(Position current) {
 	printInOrder(current->right);
 }
 Position deleteNode(Position current, int number) {
-	if (NULL == current) return NULL; //ili return current;
+	
+	if (NULL == current)
+		return NULL;
 
 	if (current->number == number) {
-		/*if (current->left == NULL && current->right == NULL) {
-			free(current); return NULL;
-		}*/ //dodali smo na zadnji else
+		if (current->left == NULL && current->right == NULL) {
 
+		}
 		if (current->left != NULL) {
 			Position temp = findMax(current->left);
 			current->number = temp->number;
@@ -78,14 +79,19 @@ Position deleteNode(Position current, int number) {
 			current->number = temp->number;
 			current->right = deleteNode(current->right, temp->number);
 		}
-		else free(current); return NULL;
+		else {
+			free(current);
+			return NULL;
+		}
 	}
 	else if (current->number > number) {
 		current->left = deleteNode(current->left, number);
 	}
-	else /* if(current->number < number) */ {
+	else {   //(trenutna->br < broj)
 		current->right = deleteNode(current->right, number);
 	}
+	printf("Broj ne postoji!\n");
+	return current;
 }
 Position createNode(int number) {
 	Position p = NULL;
@@ -131,9 +137,9 @@ int main() {
 			scanf("%d", &broj);
 			puts("\n");
 			wantednumber = find(root, broj);
-			if (wantednumber != NULL) printf("Trazeni broj %d je pronaden!\n",broj);
+			if (wantednumber != NULL) printf("Trazeni broj %d je pronaden!\n", broj);
 			break;
-			
+
 		case 'P':
 			printf("Ispis: ");
 			printInOrder(root);
